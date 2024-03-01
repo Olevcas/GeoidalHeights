@@ -31,13 +31,20 @@ def pN_main(n, m, latitude):
     elif(n >= 2 and m == 0):
         return pN1(t, n, pN_main(n-1, 0, latitude),pN_main(n-2, 0, latitude))
     
+    elif(n >=3 and m >= 1 and m <= n-2):
+        return pN2(t, n, m, pN_main(n-1,m, latitude),pN_main(n-2, m, latitude))
+    
     elif(n >= 1 and m == (n-1)):
         return pN3(t, n, pN_main(n-1,n-1, latitude))
     
     elif(n >= 2 and m == n):
         return pN4(t, n, pN_main(n-1, n-1, latitude))
-    else:
-        return pN2(t, n, m, pN_main(n-1,m, latitude),pN_main(n-2, m, latitude))
+    
+
+
+ 
+    
+
     
 
 
