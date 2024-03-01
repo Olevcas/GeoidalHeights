@@ -20,7 +20,7 @@ Activate the enviroment:
 source venv/bin/activate
 ```
 
-##Recommended python version
+## Recommended python version
 
 For this project, I used Python 3.11.3 in my virtual enviroment. I am not exactly sure how different python versions will affect the program, but I recommend using the same version as mine.
 
