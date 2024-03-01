@@ -44,7 +44,6 @@ def geoidalHeight(latitude, longitude, R):
 
     geoidUndulation = constant_term * sum
     print("The point with latitude:", latitude, " and longitude:", longitude, " has N = ", geoidUndulation)
-    return geoidUndulation
+    return geoidUndulation                                 
 
-
-
+geoidalHeight(20,20, constants.r)
