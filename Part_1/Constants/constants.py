@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import pygmt
 
-
 a = 6378137.0000 #m
 b= 6356752.3141 #m
 f1 = 298.257222101
@@ -24,7 +23,12 @@ colspecs = [(7, 9), (12, 14), (17, 39), (42, 64)]
 # Read the text file into a pandas DataFrame, skipping the specified number of rows
 df = pd.read_fwf('Part_1/Data/EGM2008.txt', colspecs=colspecs, skiprows=skip_rows, nrows=229)
 
-print("Hei")
+fig = pygmt.Figure()
+# Make a global Mollweide map with automatic ticks
+fig.basemap(region="g", projection="W15c", frame=True)
+# Plot the land as light gray, and the water as sky blue
+fig.coast(land="#666666", water="skyblue")
+fig.show()
 
 
 
