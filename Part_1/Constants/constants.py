@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import pygmt
 
 
 a = 6378137.0000 #m
@@ -22,6 +23,9 @@ colspecs = [(7, 9), (12, 14), (17, 39), (42, 64)]
 
 # Read the text file into a pandas DataFrame, skipping the specified number of rows
 df = pd.read_fwf('Part_1/Data/EGM2008.txt', colspecs=colspecs, skiprows=skip_rows, nrows=229)
+
+print("Hei")
+
 
 
 
