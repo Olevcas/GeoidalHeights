@@ -2,6 +2,10 @@
 
 In this project, I attempt to calculate the geoidal heights in different points, by using gravimetric models and measurements.
 
+## Recommended python version
+
+For this project, I used Python 3.11.3 in my virtual enviroment. I am not exactly sure how different python versions will affect the program, but I recommend using the same version as mine.
+
 ## Installing conda on mac
 
 In order to use PyGMT (the library used for visualization of the data), you need to install conda. Conda is an open-source, cross-platform, package manager that is needed to install python packages. 
@@ -33,24 +37,26 @@ cd ~/Desktop/my_project
 Create the virtual enviroment:
 
 ```bash
-python3 -m venv venv
+conda create --name myenv python=3.11.3
 ```
 Activate the enviroment:
 
 ```bash
-source venv/bin/activate
+conda activate myenv
 ```
-
-## Recommended python version
-
-For this project, I used Python 3.11.3 in my virtual enviroment. I am not exactly sure how different python versions will affect the program, but I recommend using the same version as mine.
 
 ## Creating the requirements.txt
 
-After entering the venv, type this command to create or update the text file containing the current packages installed in the venv:
+After entering the venv, type these two commands to create or update the text file containing the current packages installed in the venv:
 
 ```bash
-pip freeze > requirements.txt
+conda list --export > requirements.txt
+```
+
+and then 
+
+```bash
+pip freeze >> requirements.txt
 ```
 
 ## Installing the dependencies
