@@ -2,6 +2,27 @@
 
 In this project, I attempt to calculate the geoidal heights in different points, by using gravimetric models and measurements.
 
+## Installing conda on mac
+
+In order to use PyGMT (the library used for visualization of the data), you need to install conda. Conda is an open-source, cross-platform, package manager that is needed to install python packages. 
+
+# First step:
+
+Go to the documentation page, download the miniconda installer corresponding to your python version: https://docs.anaconda.com/free/miniconda/miniconda-other-installer-links/
+
+# Second step:
+
+Run the installer, and follow the steps provided by the installer. 
+
+# Third step:
+
+Verify that conda is installed by running 
+
+```bash
+conda --version
+```
+in your terminal.
+
 ## Setting up the virtual enviroment on mac
 
 Head to the root folder of the project:
