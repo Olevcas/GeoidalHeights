@@ -20,6 +20,10 @@ Activate the enviroment:
 source venv/bin/activate
 ```
 
+##Recommended python version
+
+For this project, I used Python 3.11.3 in my virtual enviroment. I am not exactly sure how different python versions will affect the program, but I recommend using the same version as mine.
+
 ## Creating the requirements.txt
 
 After entering the venv, type this command to create or update the text file containing the current packages installed in the venv:
