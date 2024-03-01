@@ -45,27 +45,36 @@ Activate the enviroment:
 conda activate myenv
 ```
 
-## Creating the requirements.txt
+## Creating the conda_requirements.txt and the pip_requirements.txt
 
 After entering the venv, type these two commands to create or update the text file containing the current packages installed in the venv:
 
 ```bash
-conda list --export > requirements.txt
+conda list --export > conda_requirements.txt
 ```
 
 and then 
 
 ```bash
-pip freeze >> requirements.txt
+pip freeze >> pip_requirements.txt
 ```
+
+Because the formats for pip packages and conda pacakages are different, they have to be separated into two different files. The first command creates or overwrites a .txt file containing the conda packages, and the second command does the same, but for pip packages.
 
 ## Installing the dependencies
 
-When the user is inside the venv and wants to install the dependencies for the project, use this command: 
+When the user is inside the venv and wants to install the dependencies for the project, they have to use these two commands: 
 
 ```bash
-pip install -r requirements.txt
+conda create --file conda_requirements.txt
 ```
+and
+
+```bash
+pip install -r pip_requirements.txt
+```
+
+The first one installs the conda packages, while the second one installs the pip packages.
 
 ## What is __pycache__?
 
