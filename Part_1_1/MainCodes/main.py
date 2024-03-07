@@ -2,13 +2,13 @@ import numpy as np
 import pandas as pd
 
 import sys
-sys.path.append('/Users/oleevjen-caspersen/Desktop/4.klasse/Programmering_i_geomatikk/Part_1/')
+sys.path.append('/Users/oleevjen-caspersen/Desktop/4.klasse/Programmering_i_geomatikk/Part_1_1/')
 from Constants import constants
 from Functions import pN
 from Functions import r_nm
 
 
-def geoidalHeight(latitude, longitude, R):
+def geoidalHeight(latitude, longitude, R, model):
 
     latitude_radians = latitude * (np.pi/180)
     longitude_radians = longitude * (np.pi/180)
@@ -20,7 +20,7 @@ def geoidalHeight(latitude, longitude, R):
     constant_term = constants.gm / (R * constants.gamma)
     #print("This is constant_term:", constant_term)
 
-    for index, row in constants.df.iterrows():
+    for index, row in model.iterrows():
     # Access the value of each column using the column name
         n = int(row['n'])
         m = int(row['m'])
@@ -43,7 +43,8 @@ def geoidalHeight(latitude, longitude, R):
         sum = sum + total    
 
     geoidUndulation = constant_term * sum
-    #print("The point with latitude:", latitude, " and longitude:", longitude, " has N = ", geoidUndulation)
+    print("The point with latitude:", latitude, "and longitude:", longitude, "has N = ", geoidUndulation,"m")
     return geoidUndulation                                 
 
-#geoidalHeight(20,20, constants.r)
+geoidalHeight(61.6929259311394,5.1957949286442, constants.r, constants.df_EGM2008)
+

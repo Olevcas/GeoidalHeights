@@ -15,12 +15,16 @@ latitudes = np.arange(-90, 90 + step_size, step_size)
 longitudes = np.arange(-180, 180 + step_size, step_size)
 
 # Specify the number of rows to skip
-skip_rows = 19
 
-colspecs = [(7, 9), (12, 14), (17, 39), (42, 64)]
+colspecs_EGM2008 = [(7, 9), (12, 14), (17, 39), (42, 64)]
+colspecs_GGM03S = [(5, 9), (10, 14), (14, 33), (34, 53)]
+
 
 # Read the text file into a pandas DataFrame, skipping the specified number of rows
-df = pd.read_fwf('Part_1/Data/EGM2008.txt', colspecs=colspecs, skiprows=skip_rows, nrows=134)
+df_EGM2008 = pd.read_fwf('Part_1_1/Data/EGM2008.txt', colspecs=colspecs_EGM2008, skiprows=19, nrows=229)
+df_GGM03S = pd.read_fwf('Part_1_1/Data/GGM03S.txt', colspecs=colspecs_GGM03S, skiprows=38, nrows=231)
+
+print(df_EGM2008)
 
 
 

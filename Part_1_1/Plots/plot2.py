@@ -2,14 +2,17 @@ import numpy as np
 import pandas as pd
 import pygmt
 import sys
-sys.path.append('/Users/oleevjen-caspersen/Desktop/4.klasse/Programmering_i_geomatikk/Part_1/')
+sys.path.append('/Users/oleevjen-caspersen/Desktop/4.klasse/Programmering_i_geomatikk/Part_1_1/')
 from MainCodes import main
 from Constants import constants
 
-step_size = 5
+step_size = 2
 
 longitudes = np.arange(-40, 40 + step_size, step_size)
 latitudes = np.arange(30, 80 + step_size, step_size)
+region = [-40, 40, 30, 80]  # Define region of interest (xmin, xmax, ymin, ymax)
+spacing = 3  # Grid spacing
+
 
 # Create meshgrid of latitudes and longitudes
 lons, lats = np.meshgrid(longitudes, latitudes)
@@ -28,34 +31,31 @@ for coordinate in coordinates:
     
 
 
+# Create grid coordinates
+x = np.arange(region[0], region[1] + spacing, spacing)
+y = np.arange(region[2], region[3] + spacing, spacing)
 
 
-# Determine grid parameters
-region = [-40, 40, 30, 80]  # Define region of interest (xmin, xmax, ymin, ymax)
-spacing = 0.1  # Grid spacing
-
-# Interpolate heights onto a grid using pygmt.surface
-grid = pygmt.surface(
+# Create grid file from coordinates and heights
+grid_file = "grid.nc"
+pygmt.xyz2grd(
     x=coordinates[:, 1],
     y=coordinates[:, 0],
     z=heights,
-    region=region,
-    spacing=spacing,
+    G=grid_file,
+    R=region,
+    I=spacing,
 )
-
-# Plot the interpolated grid as an image on the map
-fig = pygmt.Figure()
 
 cmap1 = pygmt.makecpt(
     cmap="jet",  # Choose a base colormap (e.g., "jet")
-    series=[np.min(heights)-5, np.max(heights)+5, (np.max(heights)-np.min(heights))/20],  # Specify the intervals
+    series=[np.min(heights)-5, np.max(heights)+5, (np.max(heights)-np.min(heights))/25],  # Specify the intervals
     continuous=False,  # Interpolate colors continuously between intervals
 )
 
-# Plot the interpolated grid as an image on the map
-fig.grdimage(grid=grid, cmap=cmap1, frame="ag",projection="Cyl_stere/30/-20/12c",region=region, transparency=10)
+# Plot the grid as squares with colors representing heights using grdimage
+fig = pygmt.Figure()
+fig.grdimage(grid=grid_file, cmap="jet", frame=True, transparency=10)
 fig.coast(shorelines="0.2p", transparency=30,region=region)
-fig.colorbar(position='JMR', frame='+l"Heights"')
+fig.colorbar(position="JMR", frame='+l"Heights"')
 fig.show()
-
-#projection="S0/90/12c"
