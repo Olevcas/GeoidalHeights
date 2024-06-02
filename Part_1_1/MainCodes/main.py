@@ -15,8 +15,6 @@ def geoidalHeight(latitude, longitude, R, model):
 
     #The final result is initially 0, but we add all the terms in the sums as they are calculated.
     sum = 0
-    i = 0
-
     constant_term = constants.gm / (R * constants.gamma)
     #print("This is constant_term:", constant_term)
 
@@ -41,10 +39,11 @@ def geoidalHeight(latitude, longitude, R, model):
         total = long_term * aRn
         #print("This is total:", total)
         sum = sum + total    
+        #print(index)
 
     geoidUndulation = constant_term * sum
-    print("The point with latitude:", latitude, "and longitude:", longitude, "has N = ", geoidUndulation,"m")
+    #print("The point with latitude:", latitude, "and longitude:", longitude, "has N = ", geoidUndulation,"m")
     return geoidUndulation                                 
 
-geoidalHeight(61.6929259311394,5.1957949286442, constants.r, constants.df_EGM2008)
+#geoidalHeight(61.9308563192723,5.12764703841812, constants.r, constants.df_EGM2008)
 

@@ -1,61 +1,65 @@
-import numpy as np
 import pandas as pd
 import pygmt
-import sys
-sys.path.append('/Users/oleevjen-caspersen/Desktop/4.klasse/Programmering_i_geomatikk/Part_1_1/')
-from MainCodes import main
-from Constants import constants
 
-step_size = 2
-
-longitudes = np.arange(-40, 40 + step_size, step_size)
-latitudes = np.arange(30, 80 + step_size, step_size)
-region = [-40, 40, 30, 80]  # Define region of interest (xmin, xmax, ymin, ymax)
-spacing = 3  # Grid spacing
-
-
-# Create meshgrid of latitudes and longitudes
-lons, lats = np.meshgrid(longitudes, latitudes)
-
-# Flatten the arrays and create an array of tuples
-coordinates = np.column_stack((lats.flatten(), lons.flatten()))
-
-
-heights = np.array([])
-
-for coordinate in coordinates:
-    # Access latitude and longitude values of each tuple
-    latitude = coordinate[0]
-    longitude = coordinate[1]
-    heights = np.append(heights,main.geoidalHeight(latitude,longitude,constants.r))
-    
-
+df_plot_data_EGM2008 = pd.read_csv('Part_1_1/Plots/Data/plot_data_EGM2008.txt', encoding='latin1', sep='A')
+df_plot_data_GGM03S = pd.read_csv('Part_1_1/Plots/Data/plot_data_GGM03S.txt', encoding='latin1', sep='A')
 
 # Create grid coordinates
-x = np.arange(region[0], region[1] + spacing, spacing)
-y = np.arange(region[2], region[3] + spacing, spacing)
+latitudes = df_plot_data_EGM2008['Latitude'].values
+longitudes = df_plot_data_EGM2008['Longitude'].values
+
+heights_EGM2008 = df_plot_data_EGM2008['Geoidal_height'].values
+heights_GGM03S = df_plot_data_GGM03S['Geoidal_height'].values
+height_difference = heights_EGM2008 - heights_GGM03S
+
+region = [-40, 40, 30, 80]  # Define region of interest (xmin, xmax, ymin, ymax)
+spacing = 5  # Grid spacing
 
 
 # Create grid file from coordinates and heights
-grid_file = "grid.nc"
-pygmt.xyz2grd(
-    x=coordinates[:, 1],
-    y=coordinates[:, 0],
-    z=heights,
-    G=grid_file,
-    R=region,
-    I=spacing,
-)
-
-cmap1 = pygmt.makecpt(
-    cmap="jet",  # Choose a base colormap (e.g., "jet")
-    series=[np.min(heights)-5, np.max(heights)+5, (np.max(heights)-np.min(heights))/25],  # Specify the intervals
-    continuous=False,  # Interpolate colors continuously between intervals
-)
+grid1 = pygmt.xyz2grd(
+            x=longitudes,
+            y=latitudes,
+            z=heights_EGM2008,
+            region=region,
+            spacing=spacing,
+        )
 
 # Plot the grid as squares with colors representing heights using grdimage
 fig = pygmt.Figure()
-fig.grdimage(grid=grid_file, cmap="jet", frame=True, transparency=10)
+fig.grdimage(grid=grid1, cmap="bathy", frame=True, transparency=10)
 fig.coast(shorelines="0.2p", transparency=30,region=region)
-fig.colorbar(position="JMR", frame='+l"Heights"')
+fig.colorbar(position="JMR", frame='+l"Heights EGM2008"')
 fig.show()
+
+
+grid2 = pygmt.xyz2grd(
+            x=longitudes,
+            y=latitudes,
+            z=heights_GGM03S,
+            region=region,
+            spacing=spacing,
+        )
+
+# Plot the grid as squares with colors representing heights using grdimage
+fig2 = pygmt.Figure()
+fig2.grdimage(grid=grid2, cmap="bathy", frame=True, transparency=10)
+fig2.coast(shorelines="0.2p", transparency=30,region=region)
+fig2.colorbar(position="JMR", frame='+l"Heights GGM03S"')
+fig2.show()
+
+
+grid3 = pygmt.xyz2grd(
+            x=longitudes,
+            y=latitudes,
+            z=height_difference,
+            region=region,
+            spacing=spacing,
+        )       
+
+# Plot the grid as squares with colors representing heights using grdimage
+fig3 = pygmt.Figure()
+fig3.grdimage(grid=grid3, cmap="bathy", frame=True, transparency=10)
+fig3.coast(shorelines="0.2p", transparency=30,region=region)
+fig3.colorbar(position="JMR", frame='+l"Height difference"')
+fig3.show()

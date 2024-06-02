@@ -10,7 +10,7 @@ longitudes = df_plot_data_EGM2008['Longitude'].values
 heights_EGM2008 = df_plot_data_EGM2008['Geoidal_height'].values
 heights_GGM03S = df_plot_data_GGM03S['Geoidal_height'].values
 
-    
+
 # Determine grid parameters
 region = [-40, 40, 30, 80]  # Define region of interest (xmin, xmax, ymin, ymax)
 spacing = 0.1  # Grid spacing
@@ -38,7 +38,7 @@ cmap1 = pygmt.makecpt(
 )
 
 # Plot the interpolated grid as an image on the map
-fig.grdimage(grid=grid, cmap=cmap1, frame="ag",projection="Cyl_stere/30/-20/12c",region=region, transparency=10)
+fig.grdimage(grid=grid, cmap=cmap1, frame="ag",projection="S0/90/12c",region=region, transparency=10)
 fig.coast(shorelines="0.2p", transparency=30,region=region)
 fig.colorbar(position='JMR', frame='+l"Heights EGM2008"')
 fig.text(text="Geoidal height model using EGM2008", x=5, y=15, font="12p,Helvetica-Bold", justify="LM")
@@ -62,7 +62,7 @@ cmap2 = pygmt.makecpt(
 )
 
 # Plot the interpolated grid as an image on the map
-fig2.grdimage(grid=grid2, cmap=cmap2, frame="ag",projection="Cyl_stere/30/-20/12c",region=region, transparency=10)
+fig2.grdimage(grid=grid2, cmap=cmap2, frame="ag",projection="S0/90/12c",region=region, transparency=10)
 fig2.coast(shorelines="0.2p", transparency=30,region=region)
 fig2.colorbar(position='JMR', frame='+l"Heights GGM03S"')
 fig.text(text="Geoidal height model using GGM03S", x=5, y=15, font="12p,Helvetica-Bold", justify="LM")
