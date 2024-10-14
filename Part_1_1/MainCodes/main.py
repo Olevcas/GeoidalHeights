@@ -1,14 +1,16 @@
 import numpy as np
-import pandas as pd
-
+import os
 import sys
+current_dir = os.path.dirname(__file__)
+part_1_1_path = os.path.join(current_dir, '../')
+sys.path.append(part_1_1_path)
 sys.path.append('/Users/oleevjen-caspersen/Desktop/4.klasse/Programmering_i_geomatikk/Part_1_1/')
 from Constants import constants
 from Functions import pN
 from Functions import r_nm
 
 
-def geoidalHeight(latitude, longitude, R, model):
+def geoidalHeight(latitude, longitude, R, dataset):
 
     latitude_radians = latitude * (np.pi/180)
     longitude_radians = longitude * (np.pi/180)
@@ -18,13 +20,16 @@ def geoidalHeight(latitude, longitude, R, model):
     constant_term = constants.gm / (R * constants.gamma)
     #print("This is constant_term:", constant_term)
 
-    for index, row in model.iterrows():
+    for index, row in dataset.iterrows():
     # Access the value of each column using the column name
         n = int(row['n'])
         m = int(row['m'])
         Cnm = float(row['Cnm'])
         Snm = float(row['Snm'])
         q = Snm
+
+        if index % 100 == 0:
+            print(f"Processing row {index}...")
     #The numbers in the dataframe are strings and not numbers, and so these have to be converted into ints or floats.
     #But because of the "d's" in the first row, they couldn't be converted and so it had to be replaced with an "e".
         
@@ -45,5 +50,5 @@ def geoidalHeight(latitude, longitude, R, model):
     #print("The point with latitude:", latitude, "and longitude:", longitude, "has N = ", geoidUndulation,"m")
     return geoidUndulation                                 
 
-#geoidalHeight(61.9308563192723,5.12764703841812, constants.r, constants.df_EGM2008)
+print(geoidalHeight(61.9308563192723,5.12764703841812, constants.r, constants.df_EGM2008))
 

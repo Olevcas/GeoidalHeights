@@ -5,6 +5,9 @@ sys.path.append('/Users/oleevjen-caspersen/Desktop/4.klasse/Programmering_i_geom
 from MainCodes import main
 from Constants import constants
 
+#This python script creates csv files containing the estimated gravimetric geoid height for a grid of latitudes and longitudes.
+#By saving the results to csv files, we avoid having to run the main function every time we want to plot the data. 
+#This saves a lot of of computational power.
 
 df_plot_data_EGM2008 = pd.DataFrame(columns=['Latitude', 'Longitude', 'Geoidal_height'])
 df_plot_data_GGM03S = pd.DataFrame(columns=['Latitude', 'Longitude', 'Geoidal_height'])
