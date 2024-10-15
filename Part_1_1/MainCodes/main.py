@@ -1,49 +1,89 @@
 import numpy as np
 import pandas as pd
-
 import sys
-sys.path.append('/Users/oleevjen-caspersen/Desktop/4.klasse/Programmering_i_geomatikk/Part_1_1/')
+sys.path.append('./Part_1_1/')
 from Constants import constants
-from Functions import pN
-from Functions import r_nm
+import numba
 
 
-def geoidalHeight(latitude, longitude, R, model):
+@numba.njit
+def jN(n):
+    e = np.sqrt(constants.e2)
+    if n % 2 == 1:
+        return 0
+    else:
+        return (((-1) ** (n // 2)) * ((3 * e ** n * (1 - n / 2 + (5 / 2) * (constants.j2n / (e ** 2)) * n)) / ((n + 1) * (n + 3) * np.sqrt(2 * n + 1))))
 
-    latitude_radians = latitude * (np.pi/180)
-    longitude_radians = longitude * (np.pi/180)
+@numba.njit
+def r_nm(c, n, m):
+    if m == 0:
+        return c - jN(n)
+    else:
+        return c
 
-    #The final result is initially 0, but we add all the terms in the sums as they are calculated.
+@numba.njit
+def pN1(t, n, pn1, pn2):
+    return ((-(np.sqrt(2 * n + 1) / n) * ((n - 1) / (np.sqrt(2 * n - 3))) * pn2) + t * ((np.sqrt(2 * n + 1) / n) * np.sqrt(2 * n - 1) * pn1))
+
+@numba.njit
+def pN2(t, n, m, pn1, pn2):
+    return (-np.sqrt(((2 * n + 1) * (n + m - 1) * (n - m - 1)) / ((2 * n - 3) * (n + m) * (n - m))) * pn2 + t * np.sqrt(((2 * n + 1) * (2 * n - 1)) / ((n + m) * (n - m))) * pn1)
+
+@numba.njit
+def pN3(t, n, pn1):
+    return (t * np.sqrt(2 * n + 1) * pn1)
+
+@numba.njit
+def pN4(t, n, pn1):
+    return (np.sqrt((2 * n + 1) / (2 * n)) * np.sqrt(1 - t ** 2) * pn1)
+
+@numba.njit
+def pN_main(n, m, latitude):
+    t = np.sin(latitude)
+    if n == 0 and m == 0:
+        return 1
+    elif n == 1 and m == 0:
+        return t * np.sqrt(3)
+    elif n == 2 and m == 0:
+        return np.sqrt(5) * (1.5 * t ** 2 - 0.5)
+    elif n == 1 and m == 1:
+        return np.sqrt(3) * np.sqrt(1 - t ** 2)
+    elif n == 2 and m == 1:
+        return t * np.sqrt(15) * np.sqrt(1 - t ** 2)
+    elif n >= 2 and m == 0:
+        return pN1(t, n, pN_main(n - 1, 0, latitude), pN_main(n - 2, 0, latitude))
+    elif n >= 3 and m >= 1 and m <= n - 2:
+        return pN2(t, n, m, pN_main(n - 1, m, latitude), pN_main(n - 2, m, latitude))
+    elif n >= 1 and m == (n - 1):
+        return pN3(t, n, pN_main(n - 1, n - 1, latitude))
+    elif n >= 2 and m == n:
+        return pN4(t, n, pN_main(n - 1, n - 1, latitude))
+
+@numba.njit
+def compute_geoidal_height(lat_radians, long_radians, R, model_values):
     sum = 0
     constant_term = constants.gm / (R * constants.gamma)
-    #print("This is constant_term:", constant_term)
-
-    for index, row in model.iterrows():
-    # Access the value of each column using the column name
-        n = int(row['n'])
-        m = int(row['m'])
-        Cnm = float(row['Cnm'])
-        Snm = float(row['Snm'])
+    for index in range(len(model_values)):
+        if (index % 100 == 0):
+            print("Entering row: ", index)
+        n = model_values[index, 0]
+        m = model_values[index, 1]
+        Cnm = model_values[index, 2]
+        Snm = model_values[index, 3]
         q = Snm
-    #The numbers in the dataframe are strings and not numbers, and so these have to be converted into ints or floats.
-    #But because of the "d's" in the first row, they couldn't be converted and so it had to be replaced with an "e".
-        
-        aRn = (constants.a/R)**n
-
-        long_term = (r_nm.r_nm(Cnm, n, m) * np.cos(m * longitude_radians) + q * np.sin(m * longitude_radians)) * pN.pN_main(n, m, latitude_radians)
-        #print("n=", n, "and m=", m, "give long term=", long_term)
-        #sumsjekk += long_term
-        #print("Long term: ", long_term)
-        #print("P: ", pN.pN_main(n, m, latitude_radians))
-        #print("This is RM:", r_nm.r_nm(Cnm, n, m), "when m =",m)
-        total = long_term * aRn
-        #print("This is total:", total)
-        sum = sum + total    
-        #print(index)
-
+        aRn = (constants.a / R) ** n
+        long_term = (r_nm(Cnm, n, m) * np.cos(m * long_radians) + q * np.sin(m * long_radians)) * pN_main(n, m, lat_radians)
+        sum += long_term * aRn
     geoidUndulation = constant_term * sum
-    #print("The point with latitude:", latitude, "and longitude:", longitude, "has N = ", geoidUndulation,"m")
-    return geoidUndulation                                 
+    return geoidUndulation
 
-#geoidalHeight(61.9308563192723,5.12764703841812, constants.r, constants.df_EGM2008)
+def geoidalHeight(latitude, longitude, R, model):
+    latitude_radians = latitude * (np.pi / 180)
+    longitude_radians = longitude * (np.pi / 180)
+    model_values = model[['n', 'm', 'Cnm', 'Snm']].values.astype(float)
+    geoidUndulation = compute_geoidal_height(latitude_radians, longitude_radians, R, model_values)
+    print("The point with latitude:", latitude, "and longitude:", longitude, "has N =", geoidUndulation, "m")
+    return geoidUndulation
 
+# Call the function
+geoidalHeight(61.9308563192723, 5.12764703841812, constants.r, constants.df_EGM2008)
