@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 import sys
-sys.path.append('/Users/oleevjen-caspersen/Desktop/4.klasse/Programmering_i_geomatikk/')
+sys.path.append('./')
 from Part_1_2 import geometric_geoid_heights
-sys.path.append('/Users/oleevjen-caspersen/Desktop/4.klasse/Programmering_i_geomatikk/Part_1_1/')
+sys.path.append('./Part_1_1/')
 from MainCodes import main
 from Constants import constants
 
