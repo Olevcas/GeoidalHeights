@@ -43,7 +43,7 @@ def pN4(t, n, pn1):
 @lru_cache(None)
 def pN_main(n, m, latitude):
     t = np.sin(latitude)
-
+    
     if (n == 0 and m == 0):
         return 1
     elif (n == 1 and m == 0):
@@ -71,8 +71,10 @@ def compute_geoidal_height(lat_radians, long_radians, R, model_values):
     sum = 0
     constant_term = constants.gm / (R * constants.gamma)
     for index in range(len(model_values)):
-        if (index % 100 == 0):
+        
+        if (index % 1000 == 0):
             print("Entering row: ", index)
+        
         n = model_values[index, 0]
         m = model_values[index, 1]
         Cnm = model_values[index, 2]
@@ -93,4 +95,6 @@ def geoidalHeight(latitude, longitude, R, model):
     return geoidUndulation
 
 # Call the function
-geoidalHeight(61.6929259311394, 5.1957949286442, constants.r, constants.df_EGM2008)
+geoidalHeight(61.9308563192723, 5.12764703841812, constants.r, constants.df_EGM2008)
+#geoidalHeight(61.9308563192723, 5.12764703841812, constants.r, constants.df_EGM2008)
+#geoidalHeight(61.6929259311394, 5.1957949286442, constants.r, constants.df_GGM03S)
