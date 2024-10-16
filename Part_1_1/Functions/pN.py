@@ -42,7 +42,9 @@ def pN_main(n, m, latitude):
     
 
 
- 
+hest = pN_main(98,11,61.6929259311394 * (np.pi / 180))
+
+print(hest)
     
 
     
