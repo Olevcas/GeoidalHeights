@@ -21,7 +21,7 @@ colspecs_GGM03S = [(5, 9), (10, 14), (14, 33), (34, 53)]
 #The two .txt files provided on Blackboard are then read and made into two pandas DataFrames, one for each gravimetric model
 #Because the first couple of rows in the .txt files do not contain data, these are skipped
 #In addition, the order of the hamonic series can be adjusted by specifying the number of rows that are to be read
-df_EGM2008 = pd.read_fwf('Part_1_1/Data/EGM2008.txt', colspecs=colspecs_EGM2008, skiprows=19, nrows=1223)
+df_EGM2008 = pd.read_fwf('Part_1_1/Data/EGM2008.txt', colspecs=colspecs_EGM2008, skiprows=19, nrows=4948)
 df_GGM03S = pd.read_fwf('Part_1_1/Data/GGM03S.txt', colspecs=colspecs_GGM03S, skiprows=38, nrows=231)
 
 
