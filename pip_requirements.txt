@@ -1,24 +1,3 @@
-certifi @ file:///private/var/folders/c_/qfmhj66j0tn016nkx_th4hxm0000gp/T/abs_dfez5lkpj0/croot/certifi_1707229180975/work/certifi
-cftime @ file:///Users/runner/miniforge3/conda-bld/cftime_1698609981033/work
-contourpy @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/contourpy_1707340536404/work
-cycler @ file:///tmp/build/80754af9/cycler_1637851556182/work
-fonttools @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_801fru8lup/croot/fonttools_1713551493489/work
-GDAL @ file:///Users/runner/miniforge3/conda-bld/gdal-split_1708278326898/work/build/swig/python
-kiwisolver @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/kiwisolver_1699242237265/work
-matplotlib @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_56lkmgsho5/croot/matplotlib-suite_1713336381321/work
-netCDF4 @ file:///Users/runner/miniforge3/conda-bld/netcdf4_1698266755820/work
-numpy @ file:///Users/runner/miniforge3/conda-bld/numpy_1707225541074/work/dist/numpy-1.26.4-cp312-cp312-macosx_10_9_x86_64.whl#sha256=c0e7d196d262a4694628c8965da758026291887ae6e907976eece62f7669407b
-packaging @ file:///home/conda/feedstock_root/build_artifacts/packaging_1696202382185/work
-pandas @ file:///Users/runner/miniforge3/conda-bld/pandas_1708708969637/work
-pillow @ file:///Users/runner/miniforge3/conda-bld/pillow_1712154521708/work
-pygmt @ file:///home/conda/feedstock_root/build_artifacts/pygmt_1706804691272/work
-pyparsing @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/pyparsing_1699242788721/work
-python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/python-dateutil_1709299778482/work
-pytz @ file:///home/conda/feedstock_root/build_artifacts/pytz_1706886791323/work
-setuptools==69.1.1
-six @ file:///home/conda/feedstock_root/build_artifacts/six_1620240208055/work
-tornado @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/tornado_1699250848162/work
-tzdata @ file:///home/conda/feedstock_root/build_artifacts/python-tzdata_1707747584337/work
-unicodedata2 @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_1anajuo38r/croot/unicodedata2_1713212953928/work
-wheel==0.42.0
-xarray @ file:///home/conda/feedstock_root/build_artifacts/xarray_1708349138545/work
+version https://git-lfs.github.com/spec/v1
+oid sha256:fc3e3312a441a069a96df84bd8108dd6e79fb0422c4dc2fd65bfbfc64619db34
+size 2280
