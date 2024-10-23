@@ -76,7 +76,7 @@ def calculateStokesCoefficients(n, m, dlat, dlon, dataset_values):
         longitude = float(row[0])  # Assuming row[0] is longitude
         value = float(row[2])      # Assuming row[2] is the relevant value (e.g., mass)
 
-        da = np.cos(np.deg2rad(latitude)) * dlat * dlon
+        da = np.cos(np.deg2rad(latitude)) * np.deg2rad(dlat) * np.deg2rad(dlon)
         long_term_r = (value / rho_w) * np.cos(m * np.deg2rad(longitude)) * da   
         long_term_q = (value / rho_w) * np.sin(m * np.deg2rad(longitude)) * da
         
@@ -106,7 +106,7 @@ def createGravityModel(nmax, dlat, dlon, dataset):
     
     # Saving the result based on dataset name
     if 'ECCO' in dataset.name:       
-        df.to_csv(f'Part_2/Data/Results/ECCO/{dataset.name}.txt', index=False)
+        df.to_csv(f'Part_2/Data/Results/ECCO/{dataset.name}.txt', index=False) 
     elif 'GLDAS' in dataset.name:
         df.to_csv(f'Part_2/Data/Results/GLDAS/{dataset.name}.txt', index=False)
 
@@ -116,7 +116,28 @@ colspecs_ECCO = [(1, 6), (7, 12), (15, 20)]
 ecco_2005 = pd.read_fwf('Part_2/Data/ECCO/2005.txt', skiprows = 14, colspecs = colspecs_ECCO, header = None)
 ecco_2005.name = '2005_ECCO_r_q'
 
-createGravityModel(constants2.n_max, 0.5, 0.5, ecco_2005)
+
+def calculateMassChange(lat, lon, dataset):
+    a = constants2.a
+    rho_avg = constants2.rho_avg
+    rho_water = constants2.rho_water
+    
+    constant_term = ((a*rho_avg)/3) 
+    dataset_values = [tuple(row) for _, row in dataset.iterrows()]
+    sum = 0
+    
+    for row in tqdm(dataset_values, leave=True, colour='green'):
+        long_term = ((2*row[0]+1)/(1+constants2.k_n[int(row[0])])) * (row[2] * np.cos(row[1] * np.deg2rad(lon)) + row[3] * np.sin(row[1] * np.deg2rad(lon))) * pN_main(row[0], row[1], np.deg2rad(lat))
+        sum += long_term
+    
+    mass_change = constant_term * sum * rho_water
+    return mass_change
+
+#createGravityModel(constants2.n_max, 0.5, 0.5, ecco_2005)
+ecco_2005_r_q = pd.read_csv('Part_2/Data/Results/ECCO/2005_ECCO_r_q.txt')
+print(calculateMassChange(175.5, 34.5, ecco_2005_r_q))
+
+
 
 
 
