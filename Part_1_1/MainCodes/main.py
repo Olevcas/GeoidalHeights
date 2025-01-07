@@ -95,6 +95,6 @@ def geoidalHeight(latitude, longitude, R, model):
     return geoidUndulation
 
 # Call the function
-geoidalHeight(61.9308563192723, 5.12764703841812, constants.r, constants.df_EGM2008)
 #geoidalHeight(61.9308563192723, 5.12764703841812, constants.r, constants.df_EGM2008)
-#geoidalHeight(61.6929259311394, 5.1957949286442, constants.r, constants.df_GGM03S)
+#geoidalHeight(61.6929259311394, 5.1957949286442, constants.r, constants.df_EGM2008)
+geoidalHeight(60.4805155169247, 5.20789252282692, constants.r, constants.df_EGM2008)
