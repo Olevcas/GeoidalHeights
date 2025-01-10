@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import sys
-sys.path.append('/Users/oleevjen-caspersen/Desktop/4.klasse/Programmering_i_geomatikk/Part_1_1/')
+sys.path.append('./Part_1_1/')
 from MainCodes import main
 from Constants import constants
 
@@ -10,12 +10,12 @@ df_plot_data_EGM2008 = pd.DataFrame(columns=['Latitude', 'Longitude', 'Geoidal_h
 df_plot_data_GGM03S = pd.DataFrame(columns=['Latitude', 'Longitude', 'Geoidal_height'])
 
 
-step_size = 5
+step_size = 1
 
-longitudes = np.arange(-40, 40 + step_size, step_size)
-latitudes = np.arange(30, 80 + step_size, step_size)
+longitudes = np.arange(-30, 30 + step_size, step_size)
+latitudes = np.arange(45, 75 + step_size, step_size)
 
-# Create meshgrid of latitudes and longitudes
+# Create meshgrid of latitudes and longitudes.
 
 def make_plot_data(latitudes, longitudes):
 
@@ -34,15 +34,16 @@ def make_plot_data(latitudes, longitudes):
 
             df_GGM03S_temp = pd.DataFrame({'Latitude': [lat], 'Longitude': [lon], 'Geoidal_height': [heights2]})
             df_plot_data_GGM03S = pd.concat([df_plot_data_GGM03S, df_GGM03S_temp], ignore_index=True)
+            print("Current lat: ", lat, ", current lon: ", lon)
 
     df_plot_data_EGM2008.to_csv('Part_1_1/Plots/Data/plot_data_EGM2008.txt', sep='A', index=False)
     df_plot_data_GGM03S.to_csv('Part_1_1/Plots/Data/plot_data_GGM03S.txt', sep='A', index=False)
 
-#make_plot_data(latitudes, longitudes)
+make_plot_data(latitudes, longitudes)
     
 
-df8 = pd.read_csv('Part_1_1/Plots/Data/plot_data_GGM03S.txt', encoding='latin1', sep='A')
-print(df8)
+#df8 = pd.read_csv('Part_1_1/Plots/Data/plot_data_GGM03S.txt', encoding='latin1', sep='A')
+#print(df8)
 
 
 

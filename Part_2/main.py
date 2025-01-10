@@ -5,25 +5,25 @@ import pandas as pd
 from tqdm import tqdm
 import numba
 
-
-@lru_cache(None)
+#The next five functions are used to calculate the fully normalized Legendre polynomials
+@lru_cache(maxsize=1000)
 def pN1(t, n, pn1, pn2):
     return ((-(np.sqrt(2*n+1))/n)*((n-1)/(np.sqrt(2*n-3)))*pn2 + t * ((np.sqrt(2*n+1))/(n))*np.sqrt(2*n-1)*pn1)
 
-@lru_cache(None)
+@lru_cache(maxsize=1000)
 def pN2(t, n, m, pn1, pn2):
     return (-np.sqrt(((2*n+1)*(n+m-1)*(n-m-1))/((2*n-3)*(n+m)*(n-m)))*pn2 + t*np.sqrt(((2*n+1)*(2*n-1))/((n+m)*(n-m)))*pn1)
 
-@lru_cache(None)
+@lru_cache(maxsize=1000)
 def pN3(t, n, pn1):
     return t * np.sqrt(2*n+1) * pn1
 
-@lru_cache(None)
+@lru_cache(maxsize=1000)
 def pN4(t, n, pn1):
     return np.sqrt((2*n+1)/(2*n)) * np.sqrt(1-t**2) * pn1
 
 # Memoize the main function
-@lru_cache(None)
+@lru_cache(maxsize=1000)
 def pN_main(n, m, latitude):
     t = np.sin(latitude)
     
@@ -51,35 +51,28 @@ def pN_main(n, m, latitude):
         return pN4(t, n, pN_main(n-1, n-1, latitude))
 
 
-'''
-Function to calculate r and q for a n-m pair
-'''
-
-
-@lru_cache(None)
+#Function to calculate r and q for a n-m pair
+@lru_cache(maxsize=1000)
 def calculateStokesCoefficients(n, m, dlat, dlon, dataset_values):
-    """
-    Memoized version of calculateStokesCoefficients.
-    `dataset_values` is a list of tuples instead of a DataFrame for memoization.
-    """
+ 
     rho_w = constants2.rho_water
     rho_avg = constants2.rho_avg
     k_n = constants2.k_n[n]
     a = constants2.a
-    
+
     constant_term = (1/(4*np.pi)) * ((1 + k_n) / (2 * n + 1)) * ((3 * rho_w) / (a * rho_avg))
     sum_r = 0
     sum_q = 0
     
     for row in dataset_values:
-        latitude = float(row[1])  # Assuming row[1] is latitude
-        longitude = float(row[0])  # Assuming row[0] is longitude
-        value = float(row[2])      # Assuming row[2] is the relevant value (e.g., mass)
+        latitude = float(row[1]) 
+        longitude = float(row[0])  
+        value = float(row[2])      
 
         da = np.cos(np.deg2rad(latitude)) * np.deg2rad(dlat) * np.deg2rad(dlon)
         long_term_r = (value / rho_w) * np.cos(m * np.deg2rad(longitude)) * da   
         long_term_q = (value / rho_w) * np.sin(m * np.deg2rad(longitude)) * da
-        
+    
         sum_r += long_term_r
         sum_q += long_term_q
 
@@ -88,10 +81,9 @@ def calculateStokesCoefficients(n, m, dlat, dlon, dataset_values):
     
     return r, q
 
+
+#Creates the gravity model. The dataset rows are converted to tuples for memoization.
 def createGravityModel(nmax, dlat, dlon, dataset):
-    """
-    Creates the gravity model. The dataset rows are converted to tuples for memoization.
-    """
     # Convert dataset rows into a list of tuples for hashing
     dataset_values = [tuple(row) for _, row in dataset.iterrows()]
     
@@ -110,11 +102,13 @@ def createGravityModel(nmax, dlat, dlon, dataset):
     elif 'GLDAS' in dataset.name:
         df.to_csv(f'Part_2/Data/Results/GLDAS/{dataset.name}.txt', index=False)
 
-
+#Specifying the columns for each variable in the ECCO and GLDAS datasets
 colspecs_ECCO = [(1, 6), (7, 12), (15, 20)]
+colspecs_GLDAS = [(1, 8), (8, 15), (15, 25)]
 
-ecco_2005 = pd.read_fwf('Part_2/Data/ECCO/2005.txt', skiprows = 14, colspecs = colspecs_ECCO, header = None)
-ecco_2005.name = '2005_ECCO_r_q'
+
+#gldas_2006 = pd.read_fwf('Part_2/Data/GLDAS/2006.txt', skiprows = 19, colspecs = colspecs_GLDAS, header = None)
+#gldas_2006.name = '2006_GLDAS_r_q_2'
 
 
 def calculateMassChange(lat, lon, dataset):
@@ -130,12 +124,19 @@ def calculateMassChange(lat, lon, dataset):
         long_term = ((2*row[0]+1)/(1+constants2.k_n[int(row[0])])) * (row[2] * np.cos(row[1] * np.deg2rad(lon)) + row[3] * np.sin(row[1] * np.deg2rad(lon))) * pN_main(row[0], row[1], np.deg2rad(lat))
         sum += long_term
     
-    mass_change = constant_term * sum * rho_water
+    mass_change = constant_term * sum 
     return mass_change
 
-#createGravityModel(constants2.n_max, 0.5, 0.5, ecco_2005)
-ecco_2005_r_q = pd.read_csv('Part_2/Data/Results/ECCO/2005_ECCO_r_q.txt')
-print(calculateMassChange(175.5, 34.5, ecco_2005_r_q))
+
+
+#Example of reading a dataset, which can then be called in the createGravityModel and used to generate harmonic coefficient 
+#ecco_2005 = pd.read_fwf('Part_2/Data/ECCO/2005.txt', skiprows = 14, colspecs = colspecs_ECCO, header = None)
+#ecco_2005.name = '2005_ECCO_r_q_2'
+#createGravityModel(n_max,1,1,ecco_2005)
+
+#Example of how to calculate the mass change based on a estimated dataset. You read the result dataset, and then calculate the mass change for a set of coordinates
+#gldas_result = pd.read_csv('Part_2/Data/Results/GLDAS/2006_GLDAS_r_q_2.txt', header=0, names=['n', 'm', 'r', 'q'],  dtype={'n': int, 'm': int, 'r': float, 'q': float})
+#print(calculateMassChange(-89.5, 7.5, gldas_result))
 
 
 

@@ -1,3 +1,5 @@
+#The constants used for the estimation of the spherical harmonic coefficients
+
 a = 6371 * 1000 #m
 rho_avg = 5517 #kg/m^3
 rho_water = 1000 #kg/m^3

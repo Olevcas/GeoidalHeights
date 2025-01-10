@@ -7,7 +7,7 @@ import numba
 from functools import lru_cache
 
 
-
+#Function for estimating Jn
 @numba.njit
 def jN(n):
     e = np.sqrt(constants.e2)
@@ -16,31 +16,34 @@ def jN(n):
     else:
         return (((-1) ** (n // 2)) * ((3 * e ** n * (1 - n / 2 + (5 / 2) * (constants.j2n / (e ** 2)) * n)) / ((n + 1) * (n + 3) * np.sqrt(2 * n + 1))))
 
+#Function for estimating R_nm
 @numba.njit
 def r_nm(c, n, m):
     if m == 0:
         return c - jN(n)
     else:
         return c
+    
 
-@lru_cache(None)
+#The following five functions estimate the fully normalized Legendre functions
+@lru_cache(maxsize=5000)
 def pN1(t, n, pn1, pn2):
     return ((-(np.sqrt(2*n+1))/n)*((n-1)/(np.sqrt(2*n-3)))*pn2 + t * ((np.sqrt(2*n+1))/(n))*np.sqrt(2*n-1)*pn1)
 
-@lru_cache(None)
+@lru_cache(maxsize=5000)
 def pN2(t, n, m, pn1, pn2):
     return (-np.sqrt(((2*n+1)*(n+m-1)*(n-m-1))/((2*n-3)*(n+m)*(n-m)))*pn2 + t*np.sqrt(((2*n+1)*(2*n-1))/((n+m)*(n-m)))*pn1)
 
-@lru_cache(None)
+@lru_cache(maxsize=5000)
 def pN3(t, n, pn1):
     return t * np.sqrt(2*n+1) * pn1
 
-@lru_cache(None)
+@lru_cache(maxsize=5000)
 def pN4(t, n, pn1):
     return np.sqrt((2*n+1)/(2*n)) * np.sqrt(1-t**2) * pn1
 
 # Memoize the main function
-@lru_cache(None)
+@lru_cache(maxsize=5000)
 def pN_main(n, m, latitude):
     t = np.sin(latitude)
     
@@ -66,15 +69,14 @@ def pN_main(n, m, latitude):
 
     elif (n >= 2 and m == n):
         return pN4(t, n, pN_main(n-1, n-1, latitude))
+    
 
+#The main function that estimates the geoidal gravimetric heights for a latitude and longitude pair with a specified model
 def compute_geoidal_height(lat_radians, long_radians, R, model_values):
     sum = 0
     constant_term = constants.gm / (R * constants.gamma)
     for index in range(len(model_values)):
-        
-        if (index % 1000 == 0):
-            print("Entering row: ", index)
-        
+
         n = model_values[index, 0]
         m = model_values[index, 1]
         Cnm = model_values[index, 2]
@@ -86,6 +88,8 @@ def compute_geoidal_height(lat_radians, long_radians, R, model_values):
     geoidUndulation = constant_term * sum
     return geoidUndulation
 
+
+#The final function that is run to output the geoidal heights. Modifies the input coordinates and reads the model data
 def geoidalHeight(latitude, longitude, R, model):
     latitude_radians = latitude * (np.pi / 180)
     longitude_radians = longitude * (np.pi / 180)
@@ -94,7 +98,7 @@ def geoidalHeight(latitude, longitude, R, model):
     print("The point with latitude:", latitude, "and longitude:", longitude, "has N =", geoidUndulation, "m")
     return geoidUndulation
 
-# Call the function
-#geoidalHeight(61.9308563192723, 5.12764703841812, constants.r, constants.df_EGM2008)
+#Examples for calling the function
+#geoidalHeight(59.0221232350261, 8.51773257817528, constants.r, constants.df_EGM2008)
 #geoidalHeight(61.6929259311394, 5.1957949286442, constants.r, constants.df_EGM2008)
-geoidalHeight(60.4805155169247, 5.20789252282692, constants.r, constants.df_EGM2008)
+#geoidalHeight(60.4805155169247, 5.20789252282692, constants.r, constants.df_EGM2008)

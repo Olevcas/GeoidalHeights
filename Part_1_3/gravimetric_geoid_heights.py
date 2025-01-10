@@ -24,6 +24,8 @@ def gravimetric_heights():
 #the geoidal height is estimated using the program created in Part_1_1 and the two different gravimetric models
     for index, row in geometric_geoid_heights.df_levelling_data.iterrows():
         
+        print("This is line nr. ", index)
+
         longitude = float(row['Longitude'])
         latitude = float(row['Latitude'])
 
@@ -31,14 +33,12 @@ def gravimetric_heights():
         df_gravimetric_EGM2008_temp = pd.DataFrame({'Latitude': [latitude], 'Longitude': [longitude], 'Geoidal_height': [main.geoidalHeight(latitude, longitude, constants.r, constants.df_EGM2008)]})
         df_gravimetric_EGM2008 = pd.concat([df_gravimetric_EGM2008, df_gravimetric_EGM2008_temp], ignore_index=True)
 
-        #df_gravimetric_GGM03S_temp = pd.DataFrame({'Latitude': [latitude], 'Longitude': [longitude], 'Geoidal_height': [main.geoidalHeight(latitude, longitude, constants.r, constants.df_GGM03S)]})
-        #df_gravimetric_GGM03S = pd.concat([df_gravimetric_GGM03S, df_gravimetric_GGM03S_temp], ignore_index=True)
-
-        print("This is line nr. ", index)
+        df_gravimetric_GGM03S_temp = pd.DataFrame({'Latitude': [latitude], 'Longitude': [longitude], 'Geoidal_height': [main.geoidalHeight(latitude, longitude, constants.r, constants.df_GGM03S)]})
+        df_gravimetric_GGM03S = pd.concat([df_gravimetric_GGM03S, df_gravimetric_GGM03S_temp], ignore_index=True)
 
 #And finally the content of the dataframes is written onto two text files
-    df_gravimetric_EGM2008.to_csv('Part_1_3/Data/gravimetric_heights_EGM2008.txt', sep='A', index=False)
-    #df_gravimetric_GGM03S.to_csv('Part_1_3/Data/gravimetric_heights_GGM03S.txt', sep='A', index=False)
+    df_gravimetric_EGM2008.to_csv('Part_1_3/Data/gravimetric_heights_EGM2008_50.txt', sep='A', index=False)
+    df_gravimetric_GGM03S.to_csv('Part_1_3/Data/gravimetric_heights_GGM03S_50.txt', sep='A', index=False)
 
 
 #Two text files are created every time the code is run, and if two files already exist, these will be overwritten and replaced by the new ones 
