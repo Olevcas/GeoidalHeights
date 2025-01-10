@@ -1,3 +1,27 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:fc3e3312a441a069a96df84bd8108dd6e79fb0422c4dc2fd65bfbfc64619db34
-size 2280
+certifi
+cftime 
+contourpy 
+cycler 
+fonttools 
+GDAL 
+kiwisolver 
+llvmlite==0.43.0
+matplotlib 
+netCDF4 
+numba==0.60.0
+numpy 
+packaging 
+pandas 
+pillow
+pygmt 
+pyparsing 
+python-dateutil 
+pytz 
+setuptools==69.1.1
+six 
+tornado 
+tqdm==4.66.5
+tzdata 
+unicodedata2 
+wheel==0.42.0
+xarray
